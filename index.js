@@ -1,38 +1,83 @@
-require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg');
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Middleware để Express có thể đọc được dữ liệu JSON từ request body
 app.use(express.json());
 
-// Cấu hình kết nối Pool tới Neon.tech
-const pool = new Pool({
-connectionString: process.env.DATABASE_URL,
-ssl: {
-rejectUnauthorized: false, // Bắt buộc phải có để tránh lỗi chứng chỉ SSL tự ký trên cloud
-},
+// Giả lập một database nhỏ bằng mảng dữ liệu (Data Mockup)
+let users = [
+{ id: 1, name: "Nguyễn Văn A", email: "a@gmail.com" },
+{ id: 2, name: "Trần Thị B", email: "b@gmail.com" }
+];
+
+// 1. GET - Lấy toàn bộ danh sách users
+app.get('/api/users', (req, res) => {
+res.status(200).json(users);
 });
 
-// Định nghĩa một route test lấy dữ liệu thời gian từ Postgres
-app.get('/test-db', async (req, res) => {
-try {
-const client = await pool.connect();
-const result = await client.query('SELECT NOW()');
-client.release(); // Giải phóng client về lại pool
+// 2. GET - Lấy thông tin chi tiết của 1 user theo ID
+app.get('/api/users/:id', (req, res) => {
+const userId = parseInt(req.params.id);
+const user = users.find(u => u.id === userId);
 
-res.json({
-success: true,
-message: "Kết nối Neon.tech thành công!",
-time: result.rows[0].now
-});
-} catch (err) {
-console.error(err);
-res.status(500).json({ success: false, error: err.message });
+if (!user) {
+return res.status(404).json({ message: "Không tìm thấy người dùng!" });
 }
+res.status(200).json(user);
 });
 
-app.listen(PORT, () => {
-console.log(`Server đang chạy tại port ${PORT}`);
+// 3. POST - Thêm mới một user
+app.post('/api/users', (req, res) => {
+const { name, email } = req.body;
+
+if (!name || !email) {
+return res.status(400).json({ message: "Vui lòng nhập đầy đủ name và email" });
+}
+
+const newUser = {
+id: users.length + 1,
+name: name,
+email: email
+};
+
+users.push(newUser);
+res.status(201).json({ message: "Tạo user thành công!", data: newUser });
 });
+
+// 4. PUT - Cập nhật toàn bộ thông tin user theo ID
+app.put('/api/users/:id', (req, res) => {
+const userId = parseInt(req.params.id);
+const user = users.find(u => u.id === userId);
+
+if (!user) {
+return res.status(404).json({ message: "Không tìm thấy người dùng để cập nhật!" });
+}
+
+user.name = req.body.name || user.name;
+user.email = req.body.email || user.email;
+
+res.status(200).json({ message: "Cập nhật thành công!", data: user });
+});
+
+// 5. DELETE - Xóa một user theo ID
+app.delete('/api/users/:id', (req, res) => {
+const userId = parseInt(req.params.id);
+const userIndex = users.findIndex(u => u.id === userId);
+
+if (userIndex === -1) {
+return res.status(404).json({ message: "Không tìm thấy người dùng để xóa!" });
+}
+
+users.splice(userIndex, 1);
+res.status(200).json({ message: "Xóa người dùng thành công!" });
+});
+
+
+// Khởi chạy server tại cổng 3000
+app.listen(PORT, () => {
+console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
+});
+
+
+
