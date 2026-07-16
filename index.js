@@ -2,17 +2,6 @@ const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const { Pool } = require('pg');
-
-const pool = new Pool({
-// Render sẽ tự động truyền chuỗi kết nối của Aiven từ biến môi trường vào đây
-connectionString: process.env.DATABASE_URL,
-ssl: {
-// Bắt buộc giữ cấu hình này để chấp nhận chứng chỉ SSL bảo mật từ Aiven trên cloud
-rejectUnauthorized: false
-}
-});
-
 // Middleware để Express có thể đọc được dữ liệu JSON từ request body
 app.use(express.json());
 
