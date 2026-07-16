@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const Pool  = require('pg');
+
 
 // Middleware để Express có thể đọc được dữ liệu JSON từ request body
 app.use(express.json());
@@ -76,8 +76,6 @@ res.status(200).json({ message: "Xóa người dùng thành công!" });
 
 //6 them doan kiem tra
 
-
-
 app.get('/test-db', async (req, res) => {
 try {
 // Chạy một câu lệnh truy vấn đơn giản nhất của Postgres
@@ -95,6 +93,34 @@ error: err.message
 }
 });
 
+//7 truy van tren pool
+
+const { Pool } = require('pg');
+
+// 1. Cấu hình kết nối tới database
+  const pool = new Pool({
+  user: 'avnadmin',
+  host: 'pg-c6df7c-guihangnhat102-59c1.l.aivencloud.com',
+  database: 'defaultdb',
+  password: 'AVNS_WysWVJ1KInB-VCbB_-k',
+  port: 18312,
+});
+
+// 2. Hàm truy vấn đơn giản
+async function truyVanDuLieu() {
+  try {
+    // Câu lệnh truy vấn cơ bản nhất
+    const res = await pool.query('SELECT * FROM thong_tin_mau');
+    
+    // In kết quả ra console
+    console.log('Dữ liệu lấy về:', res.rows);
+  } catch (err) {
+    console.error('Lỗi truy vấn:', err);
+  } finally {
+    // Đóng kết nối
+    await pool.end();
+  }
+}
 
 
 // Khởi chạy server tại cổng 3000
