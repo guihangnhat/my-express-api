@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
-const { Pool } = require('pg');
+const Pool  = require('pg');
 
 // Middleware để Express có thể đọc được dữ liệu JSON từ request body
 app.use(express.json());
@@ -76,13 +76,7 @@ res.status(200).json({ message: "Xóa người dùng thành công!" });
 
 //6 them doan kiem tra
 
-// Khởi tạo Connection Pool kết nối với Postgres
-const pool = new Pool({
-connectionString: process.env.DATABASE_URL,
-ssl: {
-rejectUnauthorized: false, // Bắt buộc phải có khi kết nối Cloud DB từ Render
-},
-});
+
 
 app.get('/test-db', async (req, res) => {
 try {
