@@ -91,35 +91,3 @@ console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
 });
 
 
-// Route 1: Kiểm tra xem server có hoạt động không (Trang chủ)
-app.get('/', (req, res) => {
-res.send('Server Express của bạn đang hoạt động bình thường trên Render!');
-});
-
-// Route 2: Test kết nối tới database và lấy thời gian hiện tại từ Postgres
-app.get('/test-db', async (req, res) => {
-try {
-const result = await pool.query('SELECT NOW()');
-res.json({
-success: true,
-message: 'Kết nối database Neon thành công!',
-time: result.rows[0].now,
-});
-} catch (err) {
-console.error('Lỗi kết nối database:', err.message);
-res.status(500).json({
-success: false,
-error: 'Không thể kết nối tới database',
-details: err.message,
-});
-}
-});
-
-// Khởi động server
-app.listen(PORT, () => {
-console.log(`🚀 Server đang chạy tại port ${PORT}`);
-});
-
-
-
-
