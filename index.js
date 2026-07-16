@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const PORT = process.env.PORT || 3000;
+const { Pool } = require('pg');
 
 // Middleware để Express có thể đọc được dữ liệu JSON từ request body
 app.use(express.json());
