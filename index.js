@@ -122,22 +122,4 @@ console.log(`🚀 Server đang chạy tại port ${PORT}`);
 
 
 
-const { Pool } = require('pg');
-
-// Lấy URL kết nối từ biến môi trường của Render hoặc file .env
-const connectionString = process.env.DATABASE_URL;
-
-const pool = new Pool({
-  connectionString: connectionString,
-  ssl: {
-    rejectUnauthorized: false // Bắt buộc khi kết nối PostgreSQL trên Render từ xa
-  }
-});
-
-// Kiểm tra kết nối database
-pool.connect()
-  .then(() => console.log('Kết nối PostgreSQL thành công!'))
-  .catch(err => console.error('Lỗi kết nối database:', err.stack));
-
-module.exports = pool;
 
