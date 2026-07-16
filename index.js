@@ -74,6 +74,25 @@ res.status(200).json({ message: "Xóa người dùng thành công!" });
 });
 
 
+app.get('/test-db', async (req, res) => {
+try {
+// Chạy một câu lệnh truy vấn đơn giản nhất của Postgres
+const result = await pool.query('SELECT NOW();');
+res.json({
+status: 'Success',
+message: 'Kết nối Render - Aiven hoạt động tốt!',
+time: result.rows[0].now
+});
+} catch (err) {
+res.status(500).json({
+status: 'Failed',
+error: err.message
+});
+}
+});
+
+
+
 // Khởi chạy server tại cổng 3000
 app.listen(PORT, () => {
 console.log(`🚀 Server đang chạy tại: http://localhost:${PORT}`);
