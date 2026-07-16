@@ -99,11 +99,11 @@ const { Pool } = require('pg');
 
 // 1. Cấu hình kết nối tới database
   const pool = new Pool({
-  user: 'avnadmin',
-  host: 'pg-c6df7c-guihangnhat102-59c1.l.aivencloud.com',
-  database: 'defaultdb',
-  password: 'AVNS_WysWVJ1KInB-VCbB_-k',
-  port: 18312,
+  user: '',
+  host: '',
+  database: '',
+  password: '',
+  port: ,
 });
 
 // 2. Hàm truy vấn đơn giản
